@@ -1,4 +1,5 @@
 {
+<<<<<<< Updated upstream
   "name": "files-manager",
   "version": "0.1.0",
   "private": true,
@@ -47,4 +48,16 @@
       "last 1 safari version"
     ]
   }
+=======
+    "private": true,
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build"
+    },
+    "devDependencies": {
+        "axios": "^1.1.2",
+        "laravel-vite-plugin": "^0.7.2",
+        "vite": "^4.0.0"
+    }
+>>>>>>> Stashed changes
 }
