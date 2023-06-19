@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\APIController\APIAuthControllers;
 use App\Http\Controllers\APIController\APIFileController;
 use App\Http\Controllers\APIController\APIReportController;
+use App\Http\Controllers\APIController\APIFileLocationController;
 use App\Http\Middleware\OwnerMiddleware;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\StaffMiddleware;
@@ -30,6 +31,11 @@ Route::middleware(['auth:sanctum', AdminMiddleware::class])->group(function () {
     Route::put('/admin/update-file/{id}', [APIFileController::class, 'updateFile']);
     Route::get('/admin/export-file/{id}', [APIFileController::class, 'exportFile']);
     Route::get('/admin/report-imported-file', [APIFileController::class, 'getFileImported']);
+
+    // get file location 
+    Route::get('/admin/get-file-location', [APIFileLocationController::class, 'getFileLocation']);
+    Route::post('/admin/store-file-location',[APIFileLocationController::class,'storeFileLocation']);
+    Route::put('/admin/update-file-location/{id}', [APIFileLocationController::class, 'updateFileLocation']);
 
 
 
