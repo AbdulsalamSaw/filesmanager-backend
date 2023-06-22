@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Models\Role;
 use Log;
+use DB;
 
 class APIAuthControllers extends Controller
 {
@@ -40,12 +41,32 @@ class APIAuthControllers extends Controller
             $isStaff = $user->hasRole('staff');
             $isAdmin = $user->hasRole('admin');
             $type = "";
+            $managerId="";
+
 
             if ($isStaff) {
-               
+                $departments = $user->departments()
+                ->where('user_id', $user->id)
+                ->get(['manager_id', 'permission_id']);
+        
+            $managerIds = $departments->pluck('manager_id')->all();
+            $permissionIds = $departments->pluck('permission_id')->all();
+        
+            $type = [];
+            foreach ($managerIds as $index => $managerId) {
+                if($permissionIds[$index]==1)
+                {
+                
+                } else if($permissionIds[$index]==2)
+                {
 
-                $type = "staff";
+                }
 
+                $type[] = [
+                    'manager_id' => $managerId,
+                    'permission_id' => $permissionIds[$index]
+                ];
+            }
             } else if ($isAdmin) {
                 $type = "admin";
             }
