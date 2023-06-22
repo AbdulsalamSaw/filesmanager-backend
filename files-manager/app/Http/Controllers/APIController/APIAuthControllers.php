@@ -41,32 +41,24 @@ class APIAuthControllers extends Controller
             $isStaff = $user->hasRole('staff');
             $isAdmin = $user->hasRole('admin');
             $type = "";
-            $managerId="";
-
+           
+            $departmentId = [];
 
             if ($isStaff) {
-                $departments = $user->departments()
+            $departments = $user->departments()
                 ->where('user_id', $user->id)
                 ->get(['manager_id', 'permission_id']);
-        
+
             $managerIds = $departments->pluck('manager_id')->all();
             $permissionIds = $departments->pluck('permission_id')->all();
-        
-            $type = [];
             foreach ($managerIds as $index => $managerId) {
-                if($permissionIds[$index]==1)
-                {
-                
-                } else if($permissionIds[$index]==2)
-                {
-
-                }
-
-                $type[] = [
+                $departmentId[] = [
                     'manager_id' => $managerId,
-                    'permission_id' => $permissionIds[$index]
+                    'permission_id' => $permissionIds[$index],
                 ];
             }
+            $type = "staff";
+
             } else if ($isAdmin) {
                 $type = "admin";
             }
@@ -77,7 +69,8 @@ class APIAuthControllers extends Controller
                 'user' => $user,
                 'email' => $user->email,
                 'token' => $plainTextToken,
-                'type' =>  $type
+                'type' =>  $type,
+                'departments'=>$departmentId,
             ], 200);
         } catch (ValidationException $e) {
             Log::error("Validation error occurred while logging in: " . $e->getMessage());
@@ -101,6 +94,7 @@ class APIAuthControllers extends Controller
                 'name' => 'required|string',
                 'email' => 'required|email|unique:users',
                 'password' => 'required|string|min:6',
+                'department_name' => 'required|string|min:6',
             ]);
 
             $randomNumber = random_int(100000, 999999);
@@ -111,6 +105,7 @@ class APIAuthControllers extends Controller
                 'email' => $validatedData['email'],
                 'password' => Hash::make($validatedData['password']),
                 'manager_id' => $managerIdString,
+                'department_name'=> $validatedData['department_name'],
             ]);
 
             $typeUser = 'admin';

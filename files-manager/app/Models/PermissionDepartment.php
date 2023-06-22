@@ -14,6 +14,8 @@ class PermissionDepartment extends Model
         'name',
         'display_name',
         'description',
+        'permission_id',
+        'department_id'
     ];
 
     public function users()

@@ -36,8 +36,8 @@ class APIFileController extends Controller
             $file->user_id = $user->id;
             $file->manager_id = $user->manager_id;
             $file->file_written =  $request->file_written;
-            $file->hidden = $request->hidden;
-
+          //  $file->hidden = $request->hidden;
+            $file->hidden = false;
 
             $file->save();
 
