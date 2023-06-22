@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
+use App\Models\FileLocation;
 
 class File extends Model
 {
@@ -12,6 +13,7 @@ class File extends Model
    
 
     protected $fillable = [
+        'id',
         'label',
         'file_path',
         'file_name',
@@ -27,6 +29,11 @@ class File extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+    
+    public function fileLocations()
+    {
+        return $this->hasMany(FileLocation::class, 'file_id');
     }
 
 }

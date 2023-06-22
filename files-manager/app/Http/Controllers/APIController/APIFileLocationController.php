@@ -10,7 +10,7 @@ use App\Models\File;
 class APIFileLocationController extends Controller
 {
    
-    public function getFileLocation()
+    public function getFileLocation(Request $request)
     {
         $user = $request->user('sanctum');
         if (!$user) {
@@ -18,11 +18,15 @@ class APIFileLocationController extends Controller
         }
 
         try {
-            $location = FileLocation::where('manager_id', $user->manager_id)->select('id', 'room_number', 'cabinet_number', 'shelf_number', 'file_type')->get();
+            $locations = FileLocation::with(['file','user'])
+            ->where('manager_id', $user->manager_id)
+            ->select('room_number', 'cabinet_number', 'shelf_number', 'created_at', 'user_id')
+            ->get();
+        
 
             return response()->json([
                 'success' => true,
-                'data' => $location,
+                'data' => $locations,
             ], 200);
         } catch (Exception $e) {
             Log::error("Error getting file location : " . $e->getMessage());

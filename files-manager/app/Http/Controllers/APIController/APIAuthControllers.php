@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+use App\Models\Department;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Models\Role;
@@ -41,7 +42,10 @@ class APIAuthControllers extends Controller
             $type = "";
 
             if ($isStaff) {
+               
+
                 $type = "staff";
+
             } else if ($isAdmin) {
                 $type = "admin";
             }
@@ -126,10 +130,18 @@ class APIAuthControllers extends Controller
                 'password' => Hash::make($validatedData['password']),
                 'manager_id' => $manager->manager_id,
             ]);
-
+            $department = new Department;
+            $department->employee_id = $user->id; 
+            $department->manager_id = $manager->manager_id; 
+            $department->save();
+            
             $typeUser = 'staff';
 
             $user->attachRole($typeUser);
+           
+    
+            $user->departments()->attach($department->id, ['permission_id' => $request->roles_department]);
+    
 
             Log::info('Employee registered successfully');
             return response()->json([
