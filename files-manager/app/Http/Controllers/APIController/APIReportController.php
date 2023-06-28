@@ -85,7 +85,8 @@ class APIReportController extends Controller
            // $manager = User::findOrFail($user->id);
             $files = File::with(['user' => function ($query) {
                 $query->select('id', 'name');
-            }])->where('manager_id', $request->manager_id)->get(['id', 'label', 'file_name', 'file_size', 'file_written','file_type', 'user_id', 'created_at']);
+            }])->where('manager_id', $request->manager_id)->orderBy('created_at', 'desc')
+            ->get(['id', 'label', 'file_name', 'file_size', 'file_written','file_type', 'user_id', 'created_at']);
 
             Log::info('Files retrieved successfully');
             return response()->json([
