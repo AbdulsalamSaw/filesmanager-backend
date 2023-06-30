@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('room_number');
             $table->string('cabinet_number');
             $table->string('shelf_number');
-            $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('file_id')->constrained('files');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('file_id')->constrained('files')->onDelete('cascade');
             $table->string('manager_id');
             $table->timestamps();
             $table->index('manager_id');  
