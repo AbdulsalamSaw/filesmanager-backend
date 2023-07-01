@@ -36,7 +36,7 @@ Route::middleware(['auth:sanctum', AdminMiddleware::class])->group(function () {
 
     // get file location 
     Route::get('/admin/get-file-location', [APIFileLocationController::class, 'getFileLocation']);
-    Route::post('/admin/store-file-location',[APIFileLocationController::class,'storeFileLocation']);
+    Route::post('/admin/store-file-location',[APIFileLocationController::class,'store']);
     Route::put('/admin/update-file-location/{id}', [APIFileLocationController::class, 'updateFileLocation']);
 
 
