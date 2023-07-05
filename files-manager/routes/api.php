@@ -22,7 +22,6 @@ Route::post('/logout',[APIAuthControllers::class,'logout']);
 Route::middleware(['auth:sanctum', AdminMiddleware::class])->group(function () {
 
     Route::post('/register-employee', [APIAuthControllers::class, 'registerEmployee']);
-    Route::delete('/admin/delete-file/{id}', [APIFileController::class, 'deleteFile']);
     Route::delete('/admin/delete-user/{id}', [APIReportController::class, 'deleteUser']);
     Route::get('/report-count-file', [APIReportController::class, 'countFile']);
     Route::get('/report-count-user', [APIReportController::class, 'countUser']);
@@ -33,11 +32,13 @@ Route::middleware(['auth:sanctum', AdminMiddleware::class])->group(function () {
     Route::get('/admin/export-file/{id}', [APIFileAdminController::class, 'exportFile']);
     Route::get('/admin/report-imported-file', [APIFileAdminController::class, 'getFileImported']);
     Route::get('/admin/report-file', [APIFileAdminController::class, 'reportFileUserAdmin']);
+    Route::delete('/admin/delete-file/{id}', [APIFileController::class, 'deleteFile']);
 
     // get file location 
     Route::get('/admin/get-file-location', [APIFileLocationController::class, 'getFileLocation']);
     Route::post('/admin/store-file-location',[APIFileLocationController::class,'store']);
     Route::put('/admin/update-file-location/{id}', [APIFileLocationController::class, 'updateFileLocation']);
+    Route::delete('/admin/delete-file-location/{id}', [APIFileLocationController::class, 'deleteFileLocation']);
 
 
 

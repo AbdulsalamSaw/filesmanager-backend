@@ -7,47 +7,39 @@ use Illuminate\Http\Request;
 use App\Models\FileLocation;
 use App\Models\File;
 use Log;
-use Illuminate\Database\QueryException;
 
 class APIFileLocationController extends Controller
 {
-   
     public function getFileLocation(Request $request)
     {
         $user = $request->user('sanctum');
         if (!$user) {
             return response()->json(['error' => 'Invalid token.'], 401);
         }
-
+    
         try {
-            $locations = FileLocation::with(['file','user'])
-            ->where('manager_id', $user->manager_id)
-            ->get();
-        
-
+            $locations = FileLocation::with(['file', 'user'])
+                ->where('manager_id', $user->manager_id)
+                ->get();
+    
             return response()->json([
                 'success' => true,
                 'data' => $locations,
             ], 200);
         } catch (Exception $e) {
-            Log::error("Error getting file location : " . $e->getMessage());
-
+            Log::error("Error getting file location: " . $e->getMessage());
+    
             $statusCode = 500;
             if ($e->getCode() >= 400 && $e->getCode() < 500) {
                 $statusCode = $e->getCode();
-                return response()->json([
-                    'success' => false,
-                    'message' => $e->getMessage(),
-                ], $statusCode);
             }
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage(),
-            ], 404);
+            ], $statusCode);
         }
     }
-
-
+    
     public function store(Request $request)
     {
         try {
@@ -56,25 +48,24 @@ class APIFileLocationController extends Controller
                 return response()->json(['error' => 'Invalid token.'], 401);
             }
     
-            $model = new FileLocation;
-            $model->file_lable = $request->file_lable;
-            $model->file_name = $request->file_name;
-            $model->room_number = $request->room_number;
-            $model->shelf_number = $request->shelf_number;
-            $model->cabinet_number = $request->cabinet_number;
-            $model->user_id = $user->id;
-            $model->manager_id = $user->manager_id;
-            $model->file_written =  $request->file_written;
-
-
-            $model->save();
-       
+            $data = $request->validate([
+                'file_lable' => 'required',
+                'file_name' => 'required',
+                'room_number' => 'required',
+                'shelf_number' => 'required',
+                'cabinet_number' => 'required',
+                'file_written' => 'required',
+            ]);
+    
+            $data['user_id'] = $user->id;
+            $data['manager_id'] = $user->manager_id;
+    
+            $model = FileLocation::create($data);
+    
             if ($model) {
-                // Data saved successfully
                 return response()->json(['message' => 'Data saved successfully']);
             }
-        } catch (QueryException $e) {
-            // Handle the database query exception
+        } catch (Exception $e) {
             Log::error("Error saving data in file_location: " . $e->getMessage());
     
             $statusCode = 500;
@@ -88,23 +79,79 @@ class APIFileLocationController extends Controller
         }
     }
     
+    public function updateFileLocation(Request $request, $id)
+    {
+        $user = $request->user('sanctum');
+        if (!$user) {
+            return response()->json(['error' => 'Invalid token.'], 401);
+        }
     
-
+        try {
+            $location = FileLocation::where('id', $id)
+                ->where('manager_id', $user->manager_id)
+                ->first();
     
-    public function show(string $id)
-    {
-        
+            if (!$location) {
+                return response()->json(['error' => 'File location not found.'], 404);
+            }
+    
+            $data = $request->validate([
+                'file_lable' => 'required',
+                'file_name' => 'required',
+                'room_number' => 'required',
+                'shelf_number' => 'required',
+                'cabinet_number' => 'required',
+                'file_written' => 'required',
+            ]);
+    
+            $location->update($data);
+    
+            return response()->json(['message' => 'File location updated successfully.']);
+        } catch (Exception $e) {
+            Log::error("Error updating file location: " . $e->getMessage());
+    
+            $statusCode = 500;
+            if ($e->getCode() >= 400 && $e->getCode() < 500) {
+                $statusCode = $e->getCode();
+            }
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], $statusCode);
+        }
     }
-
-   
-    public function update(Request $request, string $id)
+    
+    public function deleteFileLocation(Request $request, $id)
     {
-        
+        $user = $request->user('sanctum');
+        if (!$user) {
+            return response()->json(['error' => 'Invalid token.'], 401);
+        }
+    
+        try {
+            $location = FileLocation::where('id', $id)
+                ->where('manager_id', $user->manager_id)
+                ->first();
+    
+            if (!$location) {
+                return response()->json(['error' => 'File location not found.'], 404);
+            }
+    
+            $location->delete();
+    
+            return response()->json(['message' => 'File location deleted successfully.']);
+        } catch (Exception $e) {
+            Log::error("Error deleting file location: " . $e->getMessage());
+    
+            $statusCode = 500;
+            if ($e->getCode() >= 400 && $e->getCode() < 500) {
+                $statusCode = $e->getCode();
+            }
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], $statusCode);
+        }
     }
-
-   
-    public function destroy(string $id)
-    {
-       
-    }
+    
 }

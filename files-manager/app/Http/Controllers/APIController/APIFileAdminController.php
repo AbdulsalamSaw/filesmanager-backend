@@ -61,7 +61,6 @@ class APIFileAdminController extends Controller
             $fileSize = $file->getSize();
             $fileType = $file->getClientOriginalExtension();
             Log::warning("Imported file size: $fileSize kb and type: $fileType");
-            
             $file = new File;
             $file->label = $request->label;
             $file->file_name = $request->name;
@@ -73,7 +72,6 @@ class APIFileAdminController extends Controller
             $file->file_written =  $request->file_written;
           //  $file->hidden = $request->hidden;
             $file->hidden = false;
-
             $file->save();
 
             return response()->json([

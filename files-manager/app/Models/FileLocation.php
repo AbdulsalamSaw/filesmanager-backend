@@ -11,7 +11,7 @@ class FileLocation extends Model
 {
     use HasFactory;
     protected $table = 'file_locations';
-    protected $fillable = ['room_number', 'cabinet_number','shelf_number','user_id','file_id', 'manager_id'];
+    protected $fillable = ['room_number', 'cabinet_number','shelf_number','file_written','file_name','file_lable','user_id','file_id', 'manager_id'];
     
     public function user()
     {
