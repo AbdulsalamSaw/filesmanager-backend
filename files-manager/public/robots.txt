@@ -1,0 +1,6 @@
+<<<<<<< Updated upstream
+# https://www.robotstxt.org/robotstxt.html
+=======
+>>>>>>> Stashed changes
+User-agent: *
+Disallow:
